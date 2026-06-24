@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Dashboard - HardSit</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial;
+            background: #0f172a;
+            color: white;
+        }
+
+        header {
+            background: #8b5cf6;
+            padding: 15px;
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .container {
+            padding: 20px;
+        }
+
+        .card {
+            background: #1e293b;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 10px;
+        }
+
+        .btn {
+            padding: 10px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+
+        .accept {
+            background: #22c55e;
+            color: white;
+        }
+
+        .reject {
+            background: #ef4444;
+            color: white;
+        }
+
+        .complete {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .status {
+            margin-top: 10px;
+            font-weight: bold;
+            color: #facc15;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        🚨 HardSit Employee Dashboard
+    </header>
+
+    <div class="container" id="requestList">
+
+    </div>
+
+    <script>
+
+        /* demo requests (customer send pannina madhiri) */
+        if (!localStorage.getItem("requests")) {
+            let demo = [
+                {
+                    id: 1,
+                    customer: "Arul",
+                    phone: "9876543210",
+                    location: "Salem Old Bus Stand",
+                    service: "Petrol Delivery",
+                    status: "pending"
+                },
+                {
+                    id: 2,
+                    customer: "Kumar",
+                    phone: "9123456780",
+                    location: "Seelanaickenpatti",
+                    service: "Mechanic Help",
+                    status: "pending"
+                }
+            ];
+
+            localStorage.setItem("requests", JSON.stringify(demo));
+        }
+
+        let requests = JSON.parse(localStorage.getItem("requests"));
+
+        function loadRequests() {
+
+            let container = document.getElementById("requestList");
+            container.innerHTML = "";
+
+            requests.forEach((req, index) => {
+
+                let div = document.createElement("div");
+                div.className = "card";
+
+                div.innerHTML = `
+<h3>Customer: ${req.customer}</h3>
+<p>Phone: ${req.phone}</p>
+<p>Location: ${req.location}</p>
+<p>Service: ${req.service}</p>
+<p class="status">Status: ${req.status}</p>
+
+<button class="btn accept" onclick="acceptReq(${index})">Accept</button>
+<button class="btn reject" onclick="rejectReq(${index})">Reject</button>
+<button class="btn complete" onclick="completeReq(${index})">Complete</button>
+`;
+
+                container.appendChild(div);
+
+            });
+
+        }
+
+        function acceptReq(i) {
+            requests[i].status = "Accepted";
+            save();
+        }
+
+        function rejectReq(i) {
+            requests[i].status = "Rejected";
+            save();
+        }
+
+        function completeReq(i) {
+            requests[i].status = "Completed";
+            save();
+        }
+
+        function save() {
+            localStorage.setItem("requests", JSON.stringify(requests));
+            loadRequests();
+        }
+
+        loadRequests();
+
+    </script>
+
+</body>
+
+</html>

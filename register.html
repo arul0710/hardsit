@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register - HardSit</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background: #0f172a;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .box {
+      width: 100%;
+      max-width: 450px;
+      background: #1e293b;
+      padding: 25px;
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+    }
+
+    h2 {
+      text-align: center;
+      color: #8b5cf6;
+      margin-bottom: 20px;
+    }
+
+    input,
+    select {
+      width: 100%;
+      padding: 12px;
+      margin: 8px 0;
+      border: none;
+      border-radius: 8px;
+      background: #0f172a;
+      color: white;
+    }
+
+    input::placeholder {
+      color: #aaa;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      background: #8b5cf6;
+      color: white;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background: #7c3aed;
+    }
+
+    #extra {
+      display: none;
+    }
+
+    .policy {
+      font-size: 13px;
+      margin-top: 10px;
+      color: white;
+    }
+
+    .policy input {
+      width: auto;
+      margin-right: 5px;
+    }
+
+    .login-link {
+      text-align: center;
+      margin-top: 15px;
+    }
+
+    .login-link a {
+      color: #8b5cf6;
+      text-decoration: none;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="box">
+
+    <h2>Create Account</h2>
+
+    <select id="role" onchange="toggleRole()">
+      <option value="">Select Role</option>
+      <option value="customer">Customer</option>
+      <option value="employee">Employee</option>
+    </select>
+
+    <input type="text" id="name" placeholder="Full Name">
+
+    <input type="text" id="phone" placeholder="Phone Number (10 Digits)">
+
+    <input type="text" id="email" placeholder="Email Address">
+
+    <input type="password" id="password" placeholder="Password">
+
+    <input type="text" id="address" placeholder="Street, District, State, Pincode">
+
+    <div id="extra">
+
+      <input type="text" id="aadhar" placeholder="Aadhar Number (12 Digits)">
+
+      <input type="file" id="photo">
+
+    </div>
+
+    <label class="policy">
+      <input type="checkbox" id="policy">
+      I Agree To Privacy Policy
+    </label>
+
+    <br><br>
+
+    <button onclick="registerUser()">
+      Register
+    </button>
+
+    <div class="login-link">
+      Already have an account?
+      <a href="login.html">Login</a>
+    </div>
+
+  </div>
+
+  <!-- <script>
+
+    function toggleRole() {
+
+      let role =
+        document.getElementById("role").value;
+
+      document.getElementById("extra").style.display =
+        role === "employee"
+          ? "block"
+          : "none";
+
+    }
+
+    function registerUser() {
+
+      let role =
+        document.getElementById("role").value;
+
+      let name =
+        document.getElementById("name").value.trim();
+
+      let phone =
+        document.getElementById("phone").value.trim();
+
+      let email =
+        document.getElementById("email").value.trim();
+
+      let password =
+        document.getElementById("password").value;
+
+      let address =
+        document.getElementById("address").value.trim();
+
+      let policy =
+        document.getElementById("policy").checked;
+
+      if (
+        !role ||
+        !name ||
+        !phone ||
+        !email ||
+        !password ||
+        !address
+      ) {
+        alert("Please Fill All Fields");
+        return;
+      }
+
+      let emailRegex =
+        /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+      if (!emailRegex.test(email)) {
+        alert("Invalid Email Address");
+        return;
+      }
+
+      if (!/^[0-9]{10}$/.test(phone)) {
+        alert("Phone Number Must Be 10 Digits");
+        return;
+      }
+
+      let parts =
+        address.split(",");
+
+      if (parts.length < 4) {
+        alert(
+          "Address Format:\nStreet, District, State, Pincode"
+        );
+        return;
+      }
+
+      let pincode =
+        parts[3].trim();
+
+      if (!/^[0-9]{6}$/.test(pincode)) {
+        alert("Pincode Must Be 6 Digits");
+        return;
+      }
+
+      if (!policy) {
+        alert("Accept Privacy Policy");
+        return;
+      }
+
+      let user = {
+        role,
+        name,
+        phone,
+        email,
+        password,
+        address
+      };
+
+      if (role === "employee") {
+
+        let aadhar =
+          document.getElementById("aadhar").value;
+
+        let photo =
+          document.getElementById("photo").files[0];
+
+        if (!aadhar || !photo) {
+          alert(
+            "Employee Must Upload Aadhar And Photo"
+          );
+          return;
+        }
+
+        if (!/^[0-9]{12}$/.test(aadhar)) {
+          alert(
+            "Aadhar Number Must Be 12 Digits"
+          );
+          return;
+        }
+
+        let reader =
+          new FileReader();
+
+        reader.onload = function () {
+
+          user.aadhar = aadhar;
+          user.photo = reader.result;
+
+          saveUser(user);
+
+        };
+
+        reader.readAsDataURL(photo);
+
+      } else {
+
+        saveUser(user);
+
+      }
+
+    }
+
+    function saveUser(user) {
+
+      let users =
+        JSON.parse(
+          localStorage.getItem("users")
+        ) || [];
+
+      let exists =
+        users.find(
+          u => u.email === user.email
+        );
+
+      if (exists) {
+        alert(
+          "Email Already Registered"
+        );
+        return;
+      }
+
+      users.push(user);
+
+      localStorage.setItem(
+        "users",
+        JSON.stringify(users)
+      );
+
+      localStorage.setItem(
+        "loggedInUser",
+        JSON.stringify(user)
+      );
+
+      alert(
+        "Registration Successful"
+      );
+
+      window.location.href =
+        "index.html";
+
+    }
+
+  </script> -->
+  <script>
+
+    function toggleRole() {
+      let role = document.getElementById("role").value;
+      document.getElementById("extra").style.display =
+        role === "employee" ? "block" : "none";
+    }
+
+    function registerUser() {
+
+      let role = document.getElementById("role").value;
+      let name = document.getElementById("name").value.trim();
+      let phone = document.getElementById("phone").value.trim();
+      let email = document.getElementById("email").value.trim();
+      let password = document.getElementById("password").value;
+      let address = document.getElementById("address").value.trim();
+      let policy = document.getElementById("policy").checked;
+
+      if (!role || !name || !phone || !email || !password || !address) {
+        alert("Please Fill All Fields");
+        return;
+      }
+
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        alert("Invalid Email Address");
+        return;
+      }
+
+      if (!/^[0-9]{10}$/.test(phone)) {
+        alert("Phone Number Must Be 10 Digits");
+        return;
+      }
+
+      let parts = address.split(",");
+      if (parts.length < 4) {
+        alert("Address Format:\nStreet, District, State, Pincode");
+        return;
+      }
+
+      if (!/^[0-9]{6}$/.test(parts[3].trim())) {
+        alert("Pincode Must Be 6 Digits");
+        return;
+      }
+
+      if (!policy) {
+        alert("Accept Privacy Policy");
+        return;
+      }
+
+      if (role === "employee") {
+
+        let aadhar = document.getElementById("aadhar").value.trim();
+        let photo = document.getElementById("photo").files[0];
+
+        if (!aadhar || !photo) {
+          alert("Employee Must Upload Aadhar And Photo");
+          return;
+        }
+
+        if (!/^[0-9]{12}$/.test(aadhar)) {
+          alert("Aadhar Number Must Be 12 Digits");
+          return;
+        }
+
+        saveUser({ role, name, phone, email, password, address, aadhar }, photo);
+
+      } else {
+
+        saveUser({ role, name, phone, email, password, address }, null);
+
+      }
+
+    }
+
+    async function saveUser(user, photoFile) {
+
+      try {
+
+        const formData = new FormData();
+
+        formData.append("role", user.role);
+        formData.append("name", user.name);
+        formData.append("phone", user.phone);
+        formData.append("email", user.email);
+        formData.append("password", user.password);
+        formData.append("address", user.address);
+
+        if (user.role === "employee") {
+          formData.append("aadhar", user.aadhar);
+          formData.append("photo", photoFile);
+        }
+
+        const response = await fetch("http://localhost:5000/api/auth/register", {
+          method: "POST",
+          body: formData
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          alert(data.message || "Registration Failed");
+          return;
+        }
+
+        // ✅ sessionStorage use பண்றோம்
+        sessionStorage.setItem("token", data.token);
+        sessionStorage.setItem("loggedInUser", JSON.stringify(data.user));
+
+        alert("Registration Successful");
+        window.location.href = "index.html";
+
+      } catch (error) {
+        console.error(error);
+        alert("Server Error. Try Again.");
+      }
+
+    }
+
+  </script>
+
+
+</body>
+
+</html>

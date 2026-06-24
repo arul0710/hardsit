@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - HardSit</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial;
+      background: #0f172a;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .box {
+      width: 400px;
+      background: #1e293b;
+      padding: 30px;
+      border-radius: 15px;
+      color: white;
+    }
+
+    h2 {
+      text-align: center;
+      color: #8b5cf6;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 8px;
+      background: #0f172a;
+      color: white;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background: #8b5cf6;
+      border: none;
+      border-radius: 8px;
+      color: white;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #7c3aed;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="box">
+
+    <h2>Login</h2>
+
+    <input type="text" id="loginInput" placeholder="Email or Phone Number">
+    <input type="password" id="password" placeholder="Password">
+
+    <button onclick="loginUser()">Login</button>
+
+  </div>
+
+  <script>
+
+    function loginUser() {
+
+      let loginInput = document.getElementById("loginInput").value.trim();
+      let password = document.getElementById("password").value;
+
+      if (!loginInput || !password) {
+        alert("Please Fill All Fields");
+        return;
+      }
+
+      let users = JSON.parse(localStorage.getItem("users")) || [];
+
+      /* STEP 1: email/phone check */
+      let user = users.find(u =>
+        u.email === loginInput || u.password === password
+      );
+
+      /* STEP 2: password check separately */
+      if (user.password !== password) {
+        alert("Password Wrong");
+        return;
+      }
+
+      /* SUCCESS */
+      localStorage.setItem("loggedInUser", JSON.stringify(user));
+
+      alert("Login Successful");
+
+      if (user.role === "employee") {
+        window.location.href = "employee-dashboard.html";
+      } else {
+        window.location.href = "index.html";
+      }
+
+    }
+
+  </script>
+
+</body>
+
+</html>

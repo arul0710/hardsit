@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Register - HardSit</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #0f172a;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .box {
+            width: 100%;
+            max-width: 450px;
+            background: #1e293b;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+        }
+
+        h2 {
+            text-align: center;
+            color: #8b5cf6;
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #94a3b8;
+            font-size: 13px;
+            margin-bottom: 20px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border: none;
+            border-radius: 8px;
+            background: #0f172a;
+            color: white;
+        }
+
+        input::placeholder {
+            color: #aaa;
+        }
+
+        label.file-label {
+            display: block;
+            color: #94a3b8;
+            font-size: 13px;
+            margin: 8px 0 4px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background: #8b5cf6;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 5px;
+        }
+
+        button:hover {
+            background: #7c3aed;
+        }
+
+        .policy {
+            font-size: 13px;
+            margin-top: 10px;
+            color: white;
+        }
+
+        .policy input {
+            width: auto;
+            margin-right: 5px;
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 15px;
+            color: white;
+            font-size: 14px;
+        }
+
+        .login-link a {
+            color: #8b5cf6;
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="box">
+
+        <h2>Employee Register</h2>
+        <p class="subtitle">HardSit Staff Account</p>
+
+        <input type="text" id="name" placeholder="Full Name">
+        <input type="text" id="phone" placeholder="Phone Number (10 Digits)">
+        <input type="text" id="email" placeholder="Email Address">
+        <input type="password" id="password" placeholder="Password">
+        <input type="text" id="address" placeholder="Street, District, State, Pincode">
+        <input type="text" id="aadhar" placeholder="Aadhar Number (12 Digits)">
+
+        <label class="file-label">Upload Photo</label>
+        <input type="file" id="photo" accept="image/jpeg, image/png">
+
+        <label class="policy">
+            <input type="checkbox" id="policy">
+            I Agree To Privacy Policy
+        </label>
+
+        <br><br>
+
+        <button onclick="registerEmployee()">Register</button>
+
+        <div class="login-link">
+            Already have an account?
+            <a href="login.html">Login</a>
+        </div>
+
+    </div>
+
+    <script>
+
+        async function registerEmployee() {
+
+            const name = document.getElementById("name").value.trim();
+            const phone = document.getElementById("phone").value.trim();
+            const email = document.getElementById("email").value.trim();
+            const password = document.getElementById("password").value;
+            const address = document.getElementById("address").value.trim();
+            const aadhar = document.getElementById("aadhar").value.trim();
+            const photo = document.getElementById("photo").files[0];
+            const policy = document.getElementById("policy").checked;
+
+            // Validation
+            if (!name || !phone || !email || !password || !address || !aadhar || !photo) {
+                alert("Please Fill All Fields");
+                return;
+            }
+
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                alert("Invalid Email Address");
+                return;
+            }
+
+            if (!/^[0-9]{10}$/.test(phone)) {
+                alert("Phone Number Must Be 10 Digits");
+                return;
+            }
+
+            const parts = address.split(",");
+            if (parts.length < 4) {
+                alert("Address Format:\nStreet, District, State, Pincode");
+                return;
+            }
+
+            if (!/^[0-9]{6}$/.test(parts[3].trim())) {
+                alert("Pincode Must Be 6 Digits");
+                return;
+            }
+
+            if (!/^[0-9]{12}$/.test(aadhar)) {
+                alert("Aadhar Number Must Be 12 Digits");
+                return;
+            }
+
+            if (!policy) {
+                alert("Accept Privacy Policy");
+                return;
+            }
+
+            try {
+
+                const formData = new FormData();
+
+                formData.append("role", "employee");  // ✅ Fixed
+                formData.append("name", name);
+                formData.append("phone", phone);
+                formData.append("email", email);
+                formData.append("password", password);
+                formData.append("address", address);
+                formData.append("aadhar", aadhar);
+                formData.append("photo", photo);
+
+                const response = await fetch("http://localhost:5000/api/auth/register", {
+                    method: "POST",
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    alert(data.message || "Registration Failed");
+                    return;
+                }
+
+                sessionStorage.setItem("token", data.token);
+                sessionStorage.setItem("loggedInUser", JSON.stringify(data.user));
+
+                alert("Employee Registration Successful");
+                window.location.href = "employee.html";
+
+            } catch (error) {
+                console.error(error);
+                alert("Server Error. Try Again.");
+            }
+
+        }
+
+    </script>
+
+</body>
+
+</html>

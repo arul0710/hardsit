@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HardSit - Roadside Assistance</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        /* Nav Profile */
+        .nav-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+
+        .nav-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #8b5cf6;
+        }
+
+        .nav-username {
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .nav-role {
+            color: #8b5cf6;
+            font-size: 12px;
+        }
+
+        .nav-logout-btn {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            width: auto;
+        }
+
+        .nav-logout-btn:hover {
+            background: #dc2626;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- HEADER -->
+    <header>
+        <div class="logo">
+            <img src="./logo.png" alt="HardSit Logo">
+        </div>
+
+        <nav class="navbar">
+            <a href="#">Home</a>
+            <a href="#about">About</a>
+
+            <div class="nav-btns" id="navBtns">
+                <!-- JS load பண்ணும் -->
+            </div>
+        </nav>
+    </header>
+
+    <!-- HERO -->
+    <section class="hero">
+        <div>
+            <h1>HardSit</h1>
+            <p>Fast & Furious Helping Hand When You Need It</p>
+
+            <button onclick="scrollToServices()">
+                Get Help Now
+            </button>
+        </div>
+
+        <div>
+            <img src="./it-professional-reasons.jpg" alt="Roadside Assistance">
+        </div>
+    </section>
+
+    <!-- ABOUT -->
+    <section class="about" id="about">
+        <div class="typing-text">
+            <h1 id="typing"></h1>
+        </div>
+    </section>
+
+    <!-- SERVICES -->
+    <section class="services" id="services">
+
+        <h2>Our Services</h2>
+
+        <div class="cards">
+
+            <div class="card">
+                <a href="petrol.html">
+                    <div class="icon">⛽</div>
+                    <h3>Petrol Delivery</h3>
+                    <p>
+                        Emergency fuel delivery at your
+                        location anytime.
+                    </p>
+                </a>
+            </div>
+
+            <div class="card">
+                <a href="mechanic.html">
+                    <div class="icon">🔧</div>
+                    <h3>Mechanic Support</h3>
+                    <p>
+                        Instant roadside mechanic
+                        assistance.
+                    </p>
+                </a>
+            </div>
+
+            <div class="card">
+                <a href="emergency.html">
+                    <div class="icon">🚨</div>
+                    <h3>Emergency Help</h3>
+                    <p>
+                        Fast rescue & roadside emergency
+                        support 24/7.
+                    </p>
+                </a>
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- STATS -->
+    <section class="stats">
+
+        <div class="stat-box">
+            <h2>10K+</h2>
+            <p>Customers Helped</p>
+        </div>
+
+        <div class="stat-box">
+            <h2>500+</h2>
+            <p>Mechanics</p>
+        </div>
+
+        <div class="stat-box">
+            <h2>24/7</h2>
+            <p>Support</p>
+        </div>
+
+        <div class="stat-box">
+            <h2>98%</h2>
+            <p>Satisfaction</p>
+        </div>
+
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+
+        <div class="footer-top">
+
+            <div class="footer-brand">
+                <img src="logo.png" alt="HardSit">
+                <h2>HardSit</h2>
+
+                <p>
+                    Fast roadside assistance platform for
+                    emergency support anytime anywhere.
+                </p>
+            </div>
+
+            <div class="footer-column">
+                <h3>Company</h3>
+                <a href="#">About</a>
+                <a href="#">Services</a>
+                <a href="#">Careers</a>
+                <a href="#">Contact</a>
+            </div>
+
+            <div class="footer-column">
+                <h3>Support</h3>
+                <a href="#">Help Center</a>
+                <a href="#">Safety</a>
+                <a href="#">Terms</a>
+            </div>
+
+            <div class="footer-column">
+                <h3>Services</h3>
+                <a href="petrol.html">Petrol</a>
+                <a href="mechanic.html">Mechanic</a>
+                <a href="emergency.html">Emergency</a>
+            </div>
+
+        </div>
+
+        <div class="footer-bottom">
+            <p>© 2026 HardSit. All rights reserved.</p>
+        </div>
+
+    </footer>
+
+    <!-- JS -->
+    <script>
+
+        // =====================
+        // NAVBAR LOAD
+        // =====================
+
+        function loadNavbar() {
+
+            const user = JSON.parse(sessionStorage.getItem("loggedInUser"));
+            const navBtns = document.getElementById("navBtns");
+
+            if (!user) {
+
+                navBtns.innerHTML = `
+                    <a href="login.html">Login</a>
+                    <a href="register.html">Register</a>
+                    <a href="employee-register.html">Employee</a>
+                `;
+
+            } else {
+
+                const photoURL = user.photo
+                    ? "http://localhost:5000/uploads/" + user.photo
+                    : "https://ui-avatars.com/api/?name=" +
+                    encodeURIComponent(user.name) +
+                    "&background=8b5cf6&color=fff";
+
+                navBtns.innerHTML = `
+                    <div class="nav-profile" onclick="window.location.href='profile.html'">
+                        <img src="${photoURL}" alt="Profile" class="nav-avatar">
+                        <div>
+                            <div class="nav-username">${user.name}</div>
+                            <div class="nav-role">${user.role === "employee" ? "👷 Employee" : "🧑 Customer"}</div>
+                        </div>
+                    </div>
+                    <button class="nav-logout-btn" onclick="logout()">Logout</button>
+                `;
+
+            }
+
+        }
+
+        function logout() {
+            sessionStorage.removeItem("token");
+            sessionStorage.removeItem("loggedInUser");
+            window.location.href = "login.html";
+        }
+
+        loadNavbar();
+
+
+        // =====================
+        // GET HELP NOW SCROLL
+        // =====================
+
+        function scrollToServices() {
+            document
+                .getElementById("services")
+                .scrollIntoView({ behavior: "smooth" });
+        }
+
+    </script>
+
+    <script src="./script.js"></script>
+
+</body>
+
+</html>

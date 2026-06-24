@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HardSit - Emergency Service</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(180deg, #070a0f, #0f172a);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .box {
+            width: 90%;
+            max-width: 900px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #8b5cf6;
+            margin-bottom: 20px;
+        }
+
+        #location {
+            color: #cbd5e1;
+            margin-bottom: 15px;
+            line-height: 1.8;
+        }
+
+        iframe {
+            width: 100%;
+            height: 450px;
+            border: none;
+            border-radius: 15px;
+        }
+
+        button {
+            margin-top: 25px;
+            padding: 15px 35px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(45deg, #3b82f6, #8b5cf6);
+            color: white;
+            font-size: 17px;
+            cursor: pointer;
+            transition: .3s;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(139, 92, 246, .4);
+        }
+
+        .back {
+            display: inline-block;
+            margin-top: 20px;
+            color: #8b5cf6;
+            text-decoration: none;
+        }
+
+        .back:hover {
+            color: #a78bfa;
+        }
+
+        @media(max-width:768px) {
+            iframe {
+                height: 300px;
+            }
+
+            .box {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="box">
+
+        <h1>🚨 Emergency Service</h1>
+
+        <p id="location">Getting Your Location...</p>
+
+        <iframe id="map"></iframe>
+
+        <button onclick="requestService()">
+            Request Emergency
+        </button>
+
+        <br>
+
+        <a href="index.html" class="back">
+            ← Back To Home
+        </a>
+
+    </div>
+
+    <script>
+
+        navigator.geolocation.getCurrentPosition(
+
+            function (position) {
+
+                let lat = position.coords.latitude;
+                let lon = position.coords.longitude;
+
+                document.getElementById("location").innerHTML =
+                    "Latitude : " + lat +
+                    "<br>Longitude : " + lon;
+
+                document.getElementById("map").src =
+                    "https://maps.google.com/maps?q=" +
+                    lat + "," + lon +
+                    "&z=15&output=embed";
+
+            },
+
+            function () {
+
+                document.getElementById("location").innerHTML =
+                    "❌ Location Permission Denied";
+
+            }
+
+        );
+
+        function requestService() {
+
+                let user =
+                    JSON.parse(localStorage.getItem("loggedInUser"));
+
+                if (!user) {
+                    alert("Please Login First");
+                    window.location.href = "login.html";
+                    return;
+                }
+
+                let request = {
+                    service: "Emergency",
+                    name: user.name,
+                    phone: user.phone,
+                    email: user.email,
+                    address: user.address,
+                    status: "Pending"
+                };
+
+                localStorage.setItem(
+                    "currentRequest",
+                    JSON.stringify(request)
+                );
+
+                localStorage.setItem(
+                    "serviceType",
+                    "Emergency"
+                );
+
+                alert("Emergency Request Sent Successfully");
+
+                window.location.href = "tracking.html";
+            }
+
+    </script>
+
+</body>
+
+</html>
